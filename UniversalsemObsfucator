@@ -1,100 +1,215 @@
-local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/AlaaEmad23557/Neon-Hub-Lib/main/Lib'))()
-local Player = game.Players.LocalPlayer
-local Window = OrionLib:MakeWindow({
-    Name = "| XETHUS | PREMIUM BR |", 
-    SearchBar = { Default = 'Pesquise', ClearTextOnFocus = true }, 
-    HidePremium = false, 
-    SaveConfig = true, 
-    ConfigFolder = "OrionTest"
-})
+-- Serviços Necessários
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService") -- Serviço de animação adicionado
 
-local Tab = Window:MakeTab({
-    Name = "Animal Simulator",
-    Icon = "rbxassetid://11348590078",
-    PremiumOnly = false
-})
+local localPlayer = Players.LocalPlayer
+local savedKey = nil
+local savedDataFile = "RobloxSettings"
 
-Tab:AddButton({
-    Name = "Execute!",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/Hidley/refs/heads/main/Premium", true))()
-    end    
-})
-local Tab = Window:MakeTab({
-    Name = "Animal Undewater",
-    Icon = "rbxassetid://11348590078",
-    PremiumOnly = false
-})
-:AddButton({
-    Name = "Execute!",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/AnimalUnderwate/refs/heads/main/Aninalundewater"))()
-    end    
-})
-local Tab = Window:MakeTab({
-    Name = "Fisch",
-    Icon = "rbxassetid://11348590078",
-    PremiumOnly = false
-})
-:AddButton({
-    Name = "Execute!",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/UnderwaterBR/refs/heads/main/Fisch"))()
-    end    
-})
-local Tab = Window:MakeTab({
-    Name = "King Legacy",
-    Icon = "rbxassetid://11348590078",
-    PremiumOnly = false
-})
-:AddButton({
-    Name = "Execute!",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/matheuzxs/matheuzxs.lua/main/Loader"))()
-    end    
-})
-local Tab = Window:MakeTab({
-		Name = "Admins",
-		Icon = "rbxassetid://11819163504",
-		PremiumOnly = false
-	})
-	Tab:AddButton({
-		Name = "Retirar Texturas",
-		Callback = function()
-			loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-antilag-15462"))()
-		end    
-	})
-	
-	Tab:AddButton({
-		Name = "Graficos Realistas",
-		Callback = function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/Flybobbb/robloxscripts/main/rtx.lua"))()
-		end    
-	})
-	Tab:AddButton({
-		Name = "Infinite Yield",
-		Callback = function()
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-		end    
-	})
-	
-	Tab:AddButton({
-		Name = "Aimbot Universal",
-		Callback = function()
-			loadstring(game:HttpGet(("https://raw.githubusercontent.com/Yousuck780/troll-x/main/ahhhh"), true))()
-		end    
-	})
-	Tab:AddButton({
-		Name = "Teleporte com Tool",
-		Callback = function()
-			loadstring(game:HttpGet("https://pastebin.com/raw/7pQFmXUv"))()
-		end    
-	})
-	Tab:AddButton({
-		Name = "Servidor Privado",
-		Callback = function()
-			loadstring(game:HttpGet("https://pastebin.com/raw/A4r1pHJY"))()
-		end    
-	})
-	
-	loadstring(game:HttpGet("https://pastebin.com/raw/Fz6vcuAb", true))()  
+-- Função para salvar dados localmente
+local function saveData(data)
+    writefile(savedDataFile, HttpService:JSONEncode(data))
+end
+
+-- Função para carregar dados localmente
+local function loadData()
+    if isfile(savedDataFile) then
+        local data = readfile(savedDataFile)
+        return HttpService:JSONDecode(data)
+    else
+        return nil
+    end
+end
+
+-- Função para verificar se a key é válida (dentro de 24 horas)
+local function isKeyValid(timestamp)
+    local currentTime = os.time()
+    local elapsedTime = currentTime - timestamp
+    local timeLimit = 24 * 60 * 60 -- 24 horas em segundos
+
+    return elapsedTime <= timeLimit
+end
+
+-- Função para verificar e carregar a key
+local function loadKey()
+    local data = loadData()
+    if data and data.Key and data.Timestamp and isKeyValid(data.Timestamp) then
+        savedKey = data.Key
+        print("Key carregada com sucesso:", savedKey)
+        return savedKey
+    else
+        print("Nenhuma key válida salva.")
+        return nil
+    end
+end
+
+-- Função para salvar a key com timestamp
+local function saveKey(key)
+    local timestamp = os.time() -- Salva o tempo atual
+    saveData({Key = key, Timestamp = timestamp})
+    print("Key salva com sucesso!")
+end
+
+-- Carregar key ao iniciar o script
+local key = loadKey()
+
+-- Se a key já estiver salva e válida, o hub é carregado automaticamente
+if key then
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/XethusOscript/refs/heads/main/Xethus%20sem%20obsfucator"))()
+
+    return
+end
+
+-- GUI Creation (Tema Preto e Branco com contorno)
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel") 
+local TextBox = Instance.new("TextBox")
+local ConfirmButton = Instance.new("TextButton")
+local CloseButton = Instance.new("TextButton") 
+local CopyKeyButton = Instance.new("TextButton")
+local UIStroke = Instance.new("UIStroke") -- Para o contorno
+
+ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+-- Configurando o Frame com contorno
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
+Frame.Position = UDim2.new(0.5, -200, 0.5, -150)
+Frame.Size = UDim2.new(0, 400, 0, 300)
+Frame.BackgroundTransparency = 1 -- Começar invisível
+
+-- Adicionando o contorno (UIStroke)
+UIStroke.Parent = Frame
+UIStroke.Thickness = 3 -- Espessura do contorno
+UIStroke.Color = Color3.fromRGB(255, 255, 255) -- Contorno branco
+
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
+Title.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Text = "  XETHUS HUB "
+Title.Font = Enum.Font.SourceSansBold
+Title.TextScaled = true
+
+TextBox.Parent = Frame
+TextBox.Position = UDim2.new(0.1, 0, 0.25, 0)
+TextBox.Size = UDim2.new(0.8, 0, 0.15, 0)
+TextBox.PlaceholderText = "Insira a senha"
+TextBox.Text = ""
+TextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
+TextBox.Font = Enum.Font.SourceSans
+TextBox.TextScaled = true
+
+ConfirmButton.Parent = Frame
+ConfirmButton.Position = UDim2.new(0.1, 0, 0.45, 0)
+ConfirmButton.Size = UDim2.new(0.8, 0, 0.15, 0)
+ConfirmButton.Text = "Confirmar"
+ConfirmButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
+ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
+ConfirmButton.Font = Enum.Font.SourceSansBold
+ConfirmButton.TextScaled = true
+
+CopyKeyButton.Parent = Frame
+CopyKeyButton.Position = UDim2.new(0.1, 0, 0.65, 0)
+CopyKeyButton.Size = UDim2.new(0.8, 0, 0.15, 0)
+CopyKeyButton.Text = "Gerar link da Key!"
+CopyKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
+CopyKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
+CopyKeyButton.Font = Enum.Font.SourceSansBold
+CopyKeyButton.TextScaled = true
+
+CloseButton.Parent = Frame
+CloseButton.Position = UDim2.new(0.9, 0, 0, 0)
+CloseButton.Size = UDim2.new(0.1, 0, 0.2, 0)
+CloseButton.Text = "X"
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextScaled = true
+
+-- Função para criar animação (tween) de fade-in e fade-out
+local function fadeInGui()
+    Frame.BackgroundTransparency = 1
+    local tween = TweenService:Create(Frame, TweenInfo.new(1), {BackgroundTransparency = 0})
+    tween:Play()
+end
+
+local function fadeOutGui(callback)
+    local tween = TweenService:Create(Frame, TweenInfo.new(1), {BackgroundTransparency = 1})
+    tween:Play()
+    tween.Completed:Connect(function()
+        if callback then
+            callback()
+        end
+    end)
+end
+
+-- Aparecer GUI ao iniciar
+fadeInGui()
+
+-- Fechar GUI com animação
+CloseButton.MouseButton1Click:Connect(function()
+    fadeOutGui(function()
+        ScreenGui:Destroy()
+    end)
+end)
+
+-- Ação ao confirmar senha
+ConfirmButton.MouseButton1Click:Connect(function()
+    if TextBox.Text == "ipltadbrnsln12her" then
+        -- Salva a key
+        local key = "https://4br.me/XerhusHubGeneringKeys" -- Exemplo de URL da key
+        saveKey(key)
+        -- Carrega o hub
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/XethusOscript/refs/heads/main/Xethus%20sem%20obsfucator"))()
+        fadeOutGui(function()
+            ScreenGui:Destroy()
+        end)
+    else
+        TextBox.Text = ""
+        TextBox.PlaceholderText = "Senha incorreta!"
+    end
+end)
+
+-- Copiar Key
+CopyKeyButton.MouseButton1Click:Connect(function()
+    setclipboard("https://4br.me/XerhusHubGeneringKeys")
+    TextBox.Text = ""
+    TextBox.PlaceholderText = "Link Copiado!"
+end)
+
+-- Função de arrastar o Frame
+local dragging = false
+local dragInput, mousePos, framePos
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        mousePos = input.Position
+        framePos = Frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - mousePos
+        Frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+    end
+end)
