@@ -1,215 +1,132 @@
--- Serviços Necessários
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService") -- Serviço de animação adicionado
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/NIGHT163626/ScriptHUB/refs/heads/main/open%20sourcezada.txt'))()
+local Player = game.Players.LocalPlayer
 
-local localPlayer = Players.LocalPlayer
-local savedKey = nil
-local savedDataFile = "RobloxSettings"
+-- Configurações da Janela Principal
+local Window = OrionLib:MakeWindow({
+    Name = "Xethus Hub | Universal BR", 
+    SearchBar = { Default = 'Pesquise', ClearTextOnFocus = true }, 
+    HidePremium = false, 
+    SaveConfig = true, 
+    ConfigFolder = "Xethus",
+    IntroText = "Xethus Hub",
+    IntroIcon = "rbxassetid://73200509058998"
+})
 
--- Função para salvar dados localmente
-local function saveData(data)
-    writefile(savedDataFile, HttpService:JSONEncode(data))
-end
-
--- Função para carregar dados localmente
-local function loadData()
-    if isfile(savedDataFile) then
-        local data = readfile(savedDataFile)
-        return HttpService:JSONDecode(data)
-    else
-        return nil
-    end
-end
-
--- Função para verificar se a key é válida (dentro de 24 horas)
-local function isKeyValid(timestamp)
-    local currentTime = os.time()
-    local elapsedTime = currentTime - timestamp
-    local timeLimit = 24 * 60 * 60 -- 24 horas em segundos
-
-    return elapsedTime <= timeLimit
-end
-
--- Função para verificar e carregar a key
-local function loadKey()
-    local data = loadData()
-    if data and data.Key and data.Timestamp and isKeyValid(data.Timestamp) then
-        savedKey = data.Key
-        print("Key carregada com sucesso:", savedKey)
-        return savedKey
-    else
-        print("Nenhuma key válida salva.")
-        return nil
-    end
-end
-
--- Função para salvar a key com timestamp
-local function saveKey(key)
-    local timestamp = os.time() -- Salva o tempo atual
-    saveData({Key = key, Timestamp = timestamp})
-    print("Key salva com sucesso!")
-end
-
--- Carregar key ao iniciar o script
-local key = loadKey()
-
--- Se a key já estiver salva e válida, o hub é carregado automaticamente
-if key then
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/XethusOscript/refs/heads/main/Xethus%20sem%20obsfucator"))()
-
-    return
-end
-
--- GUI Creation (Tema Preto e Branco com contorno)
-local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local Title = Instance.new("TextLabel") 
-local TextBox = Instance.new("TextBox")
-local ConfirmButton = Instance.new("TextButton")
-local CloseButton = Instance.new("TextButton") 
-local CopyKeyButton = Instance.new("TextButton")
-local UIStroke = Instance.new("UIStroke") -- Para o contorno
-
-ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
-
--- Configurando o Frame com contorno
-Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
-Frame.Position = UDim2.new(0.5, -200, 0.5, -150)
-Frame.Size = UDim2.new(0, 400, 0, 300)
-Frame.BackgroundTransparency = 1 -- Começar invisível
-
--- Adicionando o contorno (UIStroke)
-UIStroke.Parent = Frame
-UIStroke.Thickness = 3 -- Espessura do contorno
-UIStroke.Color = Color3.fromRGB(255, 255, 255) -- Contorno branco
-
-Title.Parent = Frame
-Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
-Title.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
-Title.Position = UDim2.new(0, 0, 0, 0)
-Title.Size = UDim2.new(1, 0, 0.2, 0)
-Title.Text = "  XETHUS HUB "
-Title.Font = Enum.Font.SourceSansBold
-Title.TextScaled = true
-
-TextBox.Parent = Frame
-TextBox.Position = UDim2.new(0.1, 0, 0.25, 0)
-TextBox.Size = UDim2.new(0.8, 0, 0.15, 0)
-TextBox.PlaceholderText = "Insira a senha"
-TextBox.Text = ""
-TextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
-TextBox.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
-TextBox.Font = Enum.Font.SourceSans
-TextBox.TextScaled = true
-
-ConfirmButton.Parent = Frame
-ConfirmButton.Position = UDim2.new(0.1, 0, 0.45, 0)
-ConfirmButton.Size = UDim2.new(0.8, 0, 0.15, 0)
-ConfirmButton.Text = "Confirmar"
-ConfirmButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
-ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
-ConfirmButton.Font = Enum.Font.SourceSansBold
-ConfirmButton.TextScaled = true
-
-CopyKeyButton.Parent = Frame
-CopyKeyButton.Position = UDim2.new(0.1, 0, 0.65, 0)
-CopyKeyButton.Size = UDim2.new(0.8, 0, 0.15, 0)
-CopyKeyButton.Text = "Gerar link da Key!"
-CopyKeyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Fundo preto
-CopyKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Letras brancas
-CopyKeyButton.Font = Enum.Font.SourceSansBold
-CopyKeyButton.TextScaled = true
-
-CloseButton.Parent = Frame
-CloseButton.Position = UDim2.new(0.9, 0, 0, 0)
-CloseButton.Size = UDim2.new(0.1, 0, 0.2, 0)
-CloseButton.Text = "X"
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.Font = Enum.Font.SourceSansBold
-CloseButton.TextScaled = true
-
--- Função para criar animação (tween) de fade-in e fade-out
-local function fadeInGui()
-    Frame.BackgroundTransparency = 1
-    local tween = TweenService:Create(Frame, TweenInfo.new(1), {BackgroundTransparency = 0})
-    tween:Play()
-end
-
-local function fadeOutGui(callback)
-    local tween = TweenService:Create(Frame, TweenInfo.new(1), {BackgroundTransparency = 1})
-    tween:Play()
-    tween.Completed:Connect(function()
-        if callback then
-            callback()
+-- Função Auxiliar para Adicionar Botões
+local function AddScriptButton(tab, name, url)
+    tab:AddButton({
+        Name = name,
+        Callback = function()
+            loadstring(game:HttpGet(url))()
         end
-    end)
+    })
 end
+-- [ Aba: canal do Youtube e Executores]
+local DiscordTab = Window:MakeTab({
+    Name = "Painel ",
+    Icon = "rbxassetid://11819163504",
+    PremiumOnly = false
+})
 
--- Aparecer GUI ao iniciar
-fadeInGui()
-
--- Fechar GUI com animação
-CloseButton.MouseButton1Click:Connect(function()
-    fadeOutGui(function()
-        ScreenGui:Destroy()
-    end)
-end)
-
--- Ação ao confirmar senha
-ConfirmButton.MouseButton1Click:Connect(function()
-    if TextBox.Text == "ipltadbrnsln12her" then
-        -- Salva a key
-        local key = "https://4br.me/XerhusHubGeneringKeys" -- Exemplo de URL da key
-        saveKey(key)
-        -- Carrega o hub
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Hercules4328/XethusOscript/refs/heads/main/Xethus%20sem%20obsfucator"))()
-        fadeOutGui(function()
-            ScreenGui:Destroy()
-        end)
-    else
-        TextBox.Text = ""
-        TextBox.PlaceholderText = "Senha incorreta!"
+-- Mensagem e botão para copiar o link do Discord
+DiscordTab:AddLabel("Ultima atualização em 09/12/24")
+DiscordTab:AddButton({
+    Name = "Comunidade do Discord ",
+    Callback = function()
+        setclipboard("https://discord.gg/GMDGeYEVHW") -- Link do Discord
+        OrionLib:MakeNotification({
+            Name = "Link do Discord Copiado",
+            Content = "O link do Discord foi copiado!",
+            Image = "rbxassetid://5013032505",
+            Time = 5
+        })
     end
-end)
-
--- Copiar Key
-CopyKeyButton.MouseButton1Click:Connect(function()
-    setclipboard("https://4br.me/XerhusHubGeneringKeys")
-    TextBox.Text = ""
-    TextBox.PlaceholderText = "Link Copiado!"
-end)
-
--- Função de arrastar o Frame
-local dragging = false
-local dragInput, mousePos, framePos
-
-Frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        mousePos = input.Position
-        framePos = Frame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
+})
+DiscordTab:AddLabel("Executores Atualizado!")
+DiscordTab:AddButton({
+    Name = "Executores Atualizado ( site )",
+    Callback = function()
+        setclipboard("https://beacons.ai/ethus/mobile") -- Link do Beacons
+        OrionLib:MakeNotification({
+            Name = "Link dos executores foi Copiado",
+            Content = "O link foi copiado!",
+            Image = "rbxassetid://11819163504",
+            Time = 5
+        })
     end
-end)
+})
 
-Frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
+-- [ Aba: Animal Simulator ]
+local AnimalTab = Window:MakeTab({
+    Name = "Animal Simulator",
+    Icon = "rbxassetid://11348590078",
+    PremiumOnly = false
+})
+AnimalTab:AddLabel("Última atualização em 08/12/2024")
 
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - mousePos
-        Frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
-    end
-end)
+-- Adicionar Scripts (Animal Simulator)
+AddScriptButton(AnimalTab, "Xethus Hub", "https://raw.githubusercontent.com/Hercules4328/Hidley/refs/heads/main/Premium")
+AddScriptButton(AnimalTab, "Animal Simulator (AFK)", "https://raw.githubusercontent.com/NewWhitelistService/open-source/refs/heads/main/animal%20simulator%20afk%20farm.lua")
+AddScriptButton(AnimalTab, "Unfair Hub", "https://raw.githubusercontent.com/rbIxscriptsnet/unfair/main/rblxhub.lua")
+AddScriptButton(AnimalTab, "New Hub", "https://bmacaveli.link/newhub")
+AddScriptButton(AnimalTab, "HeimDalls GUI", "https://raw.githubusercontent.com/Golddeathninja03/rte/refs/heads/main/New%20Version")
+AddScriptButton(AnimalTab, "Animal Simulator - Crow Script", "https://raw.githubusercontent.com/CrowzScripts/AnimalSim/main/CrowOnTop")
+AddScriptButton(AnimalTab, "LT Fruits 1.9", "https://raw.githubusercontent.com/kokojoscripts/LT-FRUITS-UPDT/main/1.9")
+AddScriptButton(AnimalTab, "Nidizz Hub", "https://raw.githubusercontent.com/Nidizz/Roblox/main/Animal%20Simulator%20Script")
+AddScriptButton(AnimalTab, "Animal Simulator OP", "https://raw.githubusercontent.com/pickles20/Scriptzzz/main/Lua%20Script")
+AddScriptButton(AnimalTab, "Rblx Hub", "https://raw.githubusercontent.com/rblxscriptsnet/unfair/main/rblxhub.lua")
+AddScriptButton(AnimalTab, "Dynamic Hub", "https://pastebin.com/raw/njum95dh")
+AddScriptButton(AnimalTab, "Free Hub", "https://raw.githubusercontent.com/FreeeScripts/FREEHub/main/Loader")
+AddScriptButton(AnimalTab, "Animal Simulator Hub", "https://raw.githubusercontent.com/CasperFlyModz/discord.gg-rips/main/AnimalSimulator.lua")
+AddScriptButton(AnimalTab, "Animal Simulator", "https://github.com/KhSaeed90/Roblox/raw/workspace/5712833750")
+AddScriptButton(AnimalTab, "Ice Hub", "https://raw.githubusercontent.com/IceMael7/NewIceHub/main/Brookhaven")
+
+
+
+
+-- [ Aba: Fisch ]
+local FischTab = Window:MakeTab({
+    Name = "Fisch",
+    Icon = "rbxassetid://11348590078",
+    PremiumOnly = false
+})
+FischTab:AddLabel("Última atualização em 09/12/2024")
+AddScriptButton(FischTab, "Xethus Hub", "https://raw.githubusercontent.com/Hercules4328/UnderwaterBR/refs/heads/main/Fisch")
+AddScriptButton(FischTab, "Native Hub", "https://raw.githubusercontent.com/Native-lab/Native/main/loader.lua")
+AddScriptButton(FischTab, "Hidden Hub", "https://raw.githubusercontent.com/tulontop/HiddenRevamp/refs/heads/main/Loader.luau")
+AddScriptButton(FischTab, "Alchemy Hub", "https://scripts.alchemyhub.xyz/")
+AddScriptButton(FischTab, "Speed Hub X", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+AddScriptButton(FischTab, "Prestine Hub", "https://raw.githubusercontent.com/Hercules4328/UnderwaterBR/refs/heads/main/Fisch")
+AddScriptButton(FischTab, "Moon X Hub", "https://api.luarmor.net/files/v3/loaders/cba17b913ee63c7bfdbb9301e2d87c8b.lua")
+AddScriptButton(FischTab, "Witch Hub", "https://raw.githubusercontent.com/londnee/code/refs/heads/main/Fisch.lua")
+AddScriptButton(FischTab, "Bonk Hub", "https://bonkhubloader.netlify.app")
+AddScriptButton(FischTab, "Average Hub", "https://api.flow-hub.xyz/loader")
+AddScriptButton(FischTab, "Forge Hub", "https://raw.githubusercontent.com/Skzuppy/forge-hub/main/loader.lua")
+AddScriptButton(FischTab, "Nebora Hub", "https://api.luarmor.net/files/v3/loaders/499fa8eaaae391c6c3c77f2640811357.lua")
+AddScriptButton(FischTab, "Asther Hub", "https://api.luarmor.net/files/v3/loaders/2529a5f9dfddd5523ca4e22f21cceffa.lua")
+AddScriptButton(FischTab, "Abstractful Hub V2", "https://raw.githubusercontent.com/AbstractHub/ScriptHub/refs/heads/Loader/AutoFish")
+AddScriptButton(FischTab, "Allux Hub", "https://raw.githubusercontent.com/iminreality/Allux/refs/heads/main/Fish_GrabXP.lua")
+AddScriptButton(FischTab, "Nausigi Hub", "https://raw.githubusercontent.com/scriptpastebin/raw/main/Nausigi")
+AddScriptButton(FischTab, "Adam Hub", "https://raw.githubusercontent.com/DENGHUB2025/HUGHUB/main/WL")
+AddScriptButton(FischTab, "Onyx Hub", "https://raw.githubusercontent.com/zenzon23/ONYX-HUB123/refs/heads/main/FISCH")
+AddScriptButton(FischTab, "Nicuse Hub", "https://api.luarmor.net/files/v3/loaders/bd8b5a2f8618a502e393798c497450b5.lua")
+AddScriptButton(FischTab, "Eternal Hub", "https://raw.githubusercontent.com/Vixx77/Eternal/main/EternalHub_Fish")
+AddScriptButton(FischTab, "Rinns Hub", "https://raw.githubusercontent.com/kylosilly/femboyware/refs/heads/main/Fisch.lua")
+AddScriptButton(FischTab, "Xnox Hub", "https://raw.githubusercontent.com/kidxnox/f/refs/heads/main/f")
+AddScriptButton(FischTab, "Gooba Hub", "https://raw.githubusercontent.com/JustLevel/goombahub/main/fisch.lua")
+AddScriptButton(FischTab, "Public Hub", "https://raw.githubusercontent.com/Lythicals/script/main/Fisch.lua")
+AddScriptButton(FischTab, "Legend HandlesYT Hub", "https://raw.githubusercontent.com/LOLking123456/Fisch/refs/heads/main/New")
+AddScriptButton(FischTab, "Neuro Hub", "https://raw.githubusercontent.com/Yumiara/CPP/refs/heads/main/Main.cpp")
+
+
+
+
+
+-- [ Aba: King Legacy ]
+local KingLegacyTab = Window:MakeTab({
+    Name = "King Legacy",
+    Icon = "rbxassetid://11348590078",
+    PremiumOnly = false
+})
+AddScriptButton(KingLegacyTab, "Matheuszxs Hub", "https://raw.githubusercontent.com/matheuzxs/matheuzxs.lua/main/Loader")
+
